@@ -1,0 +1,119 @@
+package mypackage;
+
+import java.util.ArrayList;
+
+public class GraphColoring {
+
+    Kattio io;
+
+    int nodes, edges, colours;
+    int actors, roles, scenes;
+    ArrayList<Integer> startedgeSaver;
+    ArrayList<Integer> endedgeSaver;
+
+    void graphInput(){ //Done
+
+        startedgeSaver = new ArrayList<>();
+        endedgeSaver = new ArrayList<>();
+        nodes = io.getInt(); //will correspond to roles
+        edges = io.getInt(); //will correspond to scenes
+        colours = io.getInt(); //will correspond to actors
+
+        for(int j=0; j<edges; j++){
+
+            int a = io.getInt();
+            int b = io.getInt();
+            startedgeSaver.add(a);
+            endedgeSaver.add(b);
+        }
+
+    }
+
+    void reducetoCast(){
+
+        //Frågan: Kan rollerna besättas med högst k st skådespelare så att p1 och p2 deltar men inte är med i
+        //samma scener som varandra?
+
+        //Villkor:
+        //1. Inga monologer får förekomma, i.e. inga isolerade hörn
+        //2. Skådespelare 1 och skådespelare 2 ska vara med i minst en roll
+        //3. Skådespelare 1 får aldrig vara mer samma scen som skådespelare 2.
+        //4. Varje skådespelare får bara ha en roll i varje scen (Löses väl Kattis)
+
+        if(colours>=nodes){ //if number of colours is higher than number of nodes -> send a Yes-instance directly
+
+            io.println("3\n2\n3");
+            io.println(1 + " " + 1);
+            io.println(1 + " " + 2);
+            io.println(1 + " " + 3);
+            io.println(2 + " " + 1 + " " + 3);
+            io.println(2 + " " + 2 + " " + 3);
+        }
+
+        else{
+
+            StringBuilder sb = new StringBuilder();
+            roles = nodes +2;
+            scenes = edges + nodes +1;
+            actors = colours +2;
+
+            sb.append(roles);
+            sb.append("\n");
+            sb.append(scenes);
+            sb.append("\n");
+            sb.append(actors);
+            sb.append("\n");
+
+            //antalet roller:
+            sb.append("1 1\n");
+            sb.append("1 2\n");
+            for(int i=0; i<nodes; i++){
+                sb.append(colours);
+                sb.append(" ");
+                for (int j = 3; j < actors; j++) {
+                    sb.append(j);
+                    sb.append(" ");
+                }
+                sb.append(actors);
+                sb.append("\n");
+
+            }
+
+            //antal scener:
+            for (int i=3; i<=roles; i++){
+                sb.append(2);
+                sb.append(" ");
+                sb.append(2);
+                sb.append(" ");
+                sb.append(i);
+                sb.append("\n");
+            }
+            sb.append("2 ");
+            sb.append(roles-1);
+            sb.append(" 1\n");
+
+            for(int i=0; i<edges; i++){
+                sb.append(2);
+                sb.append(" ");
+                sb.append(startedgeSaver.get(i)+2);
+                sb.append(" ");
+                sb.append(endedgeSaver.get(i)+2);
+                sb.append("\n");
+            }
+            io.println(sb);
+
+        }
+    }
+
+    GraphColoring(){
+        io = new Kattio(System.in,System.out);
+        graphInput();
+        reducetoCast();
+        io.close();
+    }
+
+    public static void main(String[] args){
+
+        new GraphColoring();
+    }
+}
